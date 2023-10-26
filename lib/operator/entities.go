@@ -1,27 +1,44 @@
 package operator
 
 import (
+	"github.com/SENERGY-Platform/analytics-fog-lib/lib/agent"
 	"github.com/SENERGY-Platform/analytics-fog-lib/lib/control"
 )
 
-type OperatorControlCommand struct {
-	control.ControlCommand
-	Data OperatorJob `json:"data,omitempty"`
+type StartOperatorControlCommand struct {
+	control.ControlMessage
+	Operator StartOperatorMessage `json:"data,omitempty"`
+}
+
+type StopOperatorControlCommand struct {
+	control.ControlMessage
+	OperatorId string `json:"operatorId"`
+}
+
+type StartOperatorMessage struct {
+	ImageId        string            `json:"imageId"`
+	OperatorConfig map[string]string `json:"operatorConfig"`
+	InputTopics    []InputTopic      `json:"inputTopics"`
+	Config         FogConfig         `json:"config"`
+}
+
+type StartOperatorAgentResponse struct {
+	Response        string `json:"response"`
+	ResponseMessage string `json:"responseMessage"`
+}
+
+type StartOperatorAgentSuccessResponse struct {
+	StartOperatorAgentResponse
+	OperatorId  string `json:"operatorId"`
+	ContainerId string `json:"containerId"`
 }
 
 type OperatorJob struct {
-	ImageId        string            `json:"imageId,omitempty"`
-	OperatorConfig map[string]string `json:"operatorConfig,omitempty"`
-	InputTopics    []InputTopic      `json:"inputTopics,omitempty"`
-	Config         FogConfig         `json:"config,omitempty"`
+	StartOperatorMessage
+	StartOperatorAgentResponse
 
 	// Set by the master for the agent
-	Agent Agent `json:"agent,omitempty"`
-
-	// Come from the agent reseponse
-	ContainerId     string `json:"containerId,omitempty"`
-	Response        string `json:"response,omitempty"`
-	ResponseMessage string `json:"responseMessage,omitempty"`
+	Agent agent.Agent `json:"agent,omitempty"`
 }
 
 type FogConfig struct {
