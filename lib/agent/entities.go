@@ -6,13 +6,9 @@ import (
 	"github.com/SENERGY-Platform/analytics-fog-lib/lib/control"
 )
 
-type AgentRegisterMessage struct {
+type AgentInfoMessage struct {
 	control.ControlMessage
 	Conf Configuration `json:"agent"`
-}
-
-type AgentPongMessage struct {
-	AgentRegisterMessage
 }
 
 type Configuration struct {
@@ -23,4 +19,9 @@ type Agent struct {
 	Id      string    `json:"id,omitempty"`
 	Updated time.Time `json:"updated,omitempty"`
 	Active  bool      `json:"active,omitempty"`
+}
+
+type Ping struct {
+	control.ControlMessage
+	Updated time.Time `json:"updated,omitempty"`
 }

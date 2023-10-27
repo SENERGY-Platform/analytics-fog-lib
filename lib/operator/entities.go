@@ -22,41 +22,41 @@ type StartOperatorMessage struct {
 	Config         FogConfig         `json:"config"`
 }
 
-type StartOperatorAgentResponse struct {
-	Response        string `json:"response"`
-	ResponseMessage string `json:"responseMessage"`
+type OperatorAgentResponse struct {
+	Response        string              `json:"state"`
+	ResponseMessage string              `json:"responseMessage"`
+	OperatorId      string              `json:"operatorId"`
+	Agent           agent.Configuration `json:"agent"`
 }
 
-type StartOperatorAgentSuccessResponse struct {
-	StartOperatorAgentResponse
-	OperatorId  string `json:"operatorId"`
+type OperatorAgentSuccessResponse struct {
+	OperatorAgentResponse
 	ContainerId string `json:"containerId"`
 }
 
-type OperatorJob struct {
+type Operator struct {
 	StartOperatorMessage
-	StartOperatorAgentResponse
-
-	// Set by the master for the agent
-	Agent agent.Agent `json:"agent,omitempty"`
+	Event OperatorAgentResponse `json:"event"`
+	State string                `json:"state"`
+	Agent string                `json:"agent_id"`
 }
 
 type FogConfig struct {
-	PipelineId  string `json:"pipelineId,omitempty"`
-	OutputTopic string `json:"outputTopic,omitempty"`
+	PipelineId  string `json:"pipelineId"`
+	OutputTopic string `json:"outputTopic"`
 	// TODO check if operator is unique
-	OperatorId     string `json:"operatorId,omitempty"`
-	BaseOperatorId string `json:"baseOperatorId,omitempty"`
+	OperatorId     string `json:"operatorId"`
+	BaseOperatorId string `json:"baseOperatorId"`
 }
 
 type InputTopic struct {
-	Name        string    `json:"name,omitempty"`
-	FilterType  string    `json:"filterType,omitempty"`
-	FilterValue string    `json:"filterValue,omitempty"`
-	Mappings    []Mapping `json:"mappings,omitempty"`
+	Name        string    `json:"name"`
+	FilterType  string    `json:"filterType"`
+	FilterValue string    `json:"filterValue"`
+	Mappings    []Mapping `json:"mappings"`
 }
 
 type Mapping struct {
-	Dest   string `json:"dest,omitempty"`
-	Source string `json:"source,omitempty"`
+	Dest   string `json:"dest"`
+	Source string `json:"source"`
 }
