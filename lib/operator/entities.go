@@ -12,7 +12,7 @@ type StartOperatorControlCommand struct {
 
 type StopOperatorControlCommand struct {
 	control.ControlMessage
-	OperatorId string `json:"operatorId"`
+	OperatorIDs
 }
 
 type StartOperatorMessage struct {
@@ -41,12 +41,15 @@ type Operator struct {
 	Agent string                `json:"agent_id"`
 }
 
-type FogConfig struct {
-	PipelineId  string `json:"pipelineId"`
-	OutputTopic string `json:"outputTopic"`
-	// TODO check if operator is unique
-	OperatorId     string `json:"operatorId"`
+type OperatorIDs struct {
+	PipelineId     string `json:"pipelineId"`
+	OperatorId     string `json:"operatorId"` // TODO check if operator is unique
 	BaseOperatorId string `json:"baseOperatorId"`
+}
+
+type FogConfig struct {
+	OutputTopic string `json:"outputTopic"`
+	OperatorIDs
 }
 
 type InputTopic struct {
