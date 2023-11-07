@@ -2,13 +2,11 @@ package mqtt
 
 import (
 	"crypto/tls"
-	"flag"
 
-	//"log"
 	"os"
 	"strconv"
 	"time"
-
+	"errors"
 	log_level "github.com/y-du/go-log-level"
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
@@ -22,29 +20,33 @@ type MQTTClient struct {
 	Logger      *log_level.Logger
 }
 
-func (client *MQTTClient) ConnectMQTTBroker(relay RelayController) {
+func (client *MQTTClient) ConnectMQTTBroker(relay RelayController, username, password *string) {
 	//MQTT.DEBUG = log.New(os.Stdout, "", 0)
 
 	hostname, _ := os.Hostname()
 
-	server := flag.String("server", "tcp://"+client.Broker.Host+":"+client.Broker.Port, "The full url of the MQTT server to connect to ex: tcp://127.0.0.1:1883")
-	client.Retained = flag.Bool("retained", false, "Are the messages sent with the retained flag")
-	clientId := flag.String("clientid", hostname+strconv.Itoa(time.Now().Second()), "A clientid for the connection")
-	username := flag.String("username", "", "A username to authenticate to the MQTT server")
-	password := flag.String("password", "", "Password to match username")
-	flag.Parse()
+	server := "tcp://"+client.Broker.Host+":"+client.Broker.Port
+	retained := false
+	client.Retained = &retained
+	clientId := hostname+strconv.Itoa(time.Now().Second())
 
-	connOpts := MQTT.NewClientOptions().AddBroker(*server).SetClientID(*clientId).SetCleanSession(true)
-	if *username != "" {
+	connOpts := MQTT.NewClientOptions().
+		AddBroker(server).
+		SetClientID(clientId).
+		SetCleanSession(true)
+
+	if username != nil && *username != "" {
 		connOpts.SetUsername(*username)
 		if *password != "" {
 			connOpts.SetPassword(*password)
 		}
 	}
+	// TODO insecure skip ?
 	tlsConfig := &tls.Config{InsecureSkipVerify: true, ClientAuth: tls.NoClientCert}
 	connOpts.SetTLSConfig(tlsConfig)
 
 	connOpts.OnConnect = func(c MQTT.Client) {
+		client.Logger.Debugf("Subscribed to topics: %v", client.TopicConfig)
 		if token := c.SubscribeMultiple(client.TopicConfig, relay.OnMessageReceived); token.Wait() && token.Error() != nil {
 			panic(token.Error())
 		}
@@ -53,17 +55,17 @@ func (client *MQTTClient) ConnectMQTTBroker(relay RelayController) {
 
 	loopCounter := 0
 	for {
-		client.Logger.Debugf("Try to connect to: %s [%d/240]", *server, loopCounter)
+		client.Logger.Debugf("Try to connect to: %s [%d/240]", server, loopCounter)
 
 		if loopCounter > 240 {
 			panic("Could not connect with broker")
 		}
 
 		if token := client.Client.Connect(); token.Wait() && token.Error() != nil {
-			client.Logger.Errorf("Could not connect to %s : %s\n", *server, token.Error())
+			client.Logger.Errorf("Could not connect to %s : %s\n", server, token.Error())
 			time.Sleep(5 * time.Second)
 		} else {
-			client.Logger.Debugf("Connected to %s\n", *server)
+			client.Logger.Debugf("Connected to %s\n", server)
 			break
 		}
 		loopCounter += 1
@@ -76,6 +78,16 @@ func (client *MQTTClient) CloseConnection() {
 	time.Sleep(1 * time.Second)
 }
 
-func (client *MQTTClient) Publish(topic string, message string, qos int) {
-	client.Client.Publish(topic, byte(qos), *client.Retained, message)
+func (client *MQTTClient) Publish(topic string, message string, qos int) error {
+	if !client.Client.IsConnected() {
+		client.Logger.Error("WARNING: mqtt client not connected")
+		return errors.New("mqtt client not connected")
+	}
+
+	token := client.Client.Publish(topic, byte(qos), *client.Retained, message)
+	if token.Wait() && token.Error() != nil {
+		client.Logger.Errorf("Error on Publish: ", token.Error())
+		return token.Error()
+	}
+	return nil
 }
