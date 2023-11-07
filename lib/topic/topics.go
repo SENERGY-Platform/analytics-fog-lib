@@ -1,3 +1,3 @@
 package topic
 
-const TopicPrefix = "fog/"
+const TopicPrefix = "fog/analytics/"
