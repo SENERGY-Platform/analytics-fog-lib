@@ -7,7 +7,7 @@ import (
 
 type StartOperatorControlCommand struct {
 	control.ControlMessage
-	Operator StartOperatorMessage `json:"data,omitempty"`
+	Operator StartOperatorMessage `json:"data"`
 }
 
 type StopOperatorControlCommand struct {
