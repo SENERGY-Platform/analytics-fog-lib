@@ -1,4 +1,4 @@
 package location
 
 const Local = "local"
-const Cloud = ""
+const Cloud = "cloud"

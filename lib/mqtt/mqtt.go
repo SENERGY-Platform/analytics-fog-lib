@@ -18,9 +18,11 @@ type MQTTClient struct {
 	Broker      BrokerConfig
 	TopicConfig TopicConfig
 	Logger      *log_level.Logger
+	Relay 		RelayController
 }
 
-func (client *MQTTClient) ConnectMQTTBroker(relay RelayController, username, password *string) {
+
+func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
 	//MQTT.DEBUG = log.New(os.Stdout, "", 0)
 
 	hostname, _ := os.Hostname()
@@ -47,7 +49,7 @@ func (client *MQTTClient) ConnectMQTTBroker(relay RelayController, username, pas
 
 	connOpts.OnConnect = func(c MQTT.Client) {
 		client.Logger.Debugf("Subscribed to topics: %v", client.TopicConfig)
-		if token := c.SubscribeMultiple(client.TopicConfig, relay.OnMessageReceived); token.Wait() && token.Error() != nil {
+		if token := c.SubscribeMultiple(client.TopicConfig, client.Relay.OnMessageReceived); token.Wait() && token.Error() != nil {
 			panic(token.Error())
 		}
 	}
@@ -90,4 +92,24 @@ func (client *MQTTClient) Publish(topic string, message string, qos int) error {
 		return token.Error()
 	}
 	return nil
+}
+
+func (client *MQTTClient) Subscribe(topic string, qos int) error {
+	token := client.Client.Subscribe(topic, 2, client.Relay.OnMessageReceived)
+	if token.Wait() && token.Error() != nil {
+		return token.Error()
+	}
+	return nil
+}
+
+func (client *MQTTClient) Unsubscribe(topic string) error {
+	token := client.Client.Unsubscribe(topic)
+	if token.Wait() && token.Error() != nil {
+		return token.Error()
+	}
+	return nil
+}
+
+func (client *MQTTClient) SetRelayController(relay RelayController) {
+	client.Relay = relay
 }
