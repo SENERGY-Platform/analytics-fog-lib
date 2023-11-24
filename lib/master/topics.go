@@ -1,8 +1,8 @@
 package master
 
 import (
-	"github.com/SENERGY-Platform/analytics-fog-lib/lib/topic"
+	"github.com/SENERGY-Platform/analytics-fog-lib/lib/fog"
 )
 
 // Used by the master to register
-const MasterTopic = topic.TopicPrefix + "master"
+const MasterTopic = fog.FogAnalyticsTopicPrefix + "master"

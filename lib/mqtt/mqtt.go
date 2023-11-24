@@ -48,11 +48,14 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
 	connOpts.SetTLSConfig(tlsConfig)
 
 	connOpts.OnConnect = func(c MQTT.Client) {
-		client.Logger.Debugf("Subscribed to topics: %v", client.TopicConfig)
-		if token := c.SubscribeMultiple(client.TopicConfig, client.Relay.OnMessageReceived); token.Wait() && token.Error() != nil {
-			panic(token.Error())
+		if(len(client.TopicConfig) != 0) {
+			client.Logger.Debugf("Subscribed to topics: %v", client.TopicConfig)
+			if token := c.SubscribeMultiple(client.TopicConfig, client.Relay.OnMessageReceived); token.Wait() && token.Error() != nil {
+				panic(token.Error())
+			}
 		}
 	}
+	
 	client.Client = MQTT.NewClient(connOpts)
 
 	loopCounter := 0

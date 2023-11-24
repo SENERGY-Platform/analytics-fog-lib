@@ -1,19 +1,27 @@
 package upstream
 
 import (
-	"github.com/SENERGY-Platform/analytics-fog-lib/lib/control"
+	"github.com/SENERGY-Platform/analytics-fog-lib/lib/cloud"	
+	"strings"
+
 )
 
 // Used by the connector/upstream proxy to forward operator output to platform
-const UpstreamProxyTopic = "/upstream" 
+const UpstreamTopic = "upstream" 
 
-const UpstreamProxyEnableTopic = UpstreamProxyTopic + "/enable"
-const UpstreamProxyDisableTopic = UpstreamProxyTopic + "/disable"
+func GetUpstreamEnableCloudTopic(id string) string {
+	return cloud.CloudAnalyticsMQTTTopicPrefix + id + "/" + UpstreamTopic + "/enable"
+} 
 
-func GetUpstreamProxyEnableTopic(userID string) string {
-	return control.GetConnectorControlTopic(userID) + UpstreamProxyTopic + UpstreamProxyEnableTopic
-}
+func GetUpstreamDisableCloudTopic(id string) string {
+	return cloud.CloudAnalyticsMQTTTopicPrefix + id + "/" + UpstreamTopic + "/disable"
+} 
 
-func GetUpstreamProxyDisableTopic(userID string) string {
-	return control.GetConnectorControlTopic(userID) + UpstreamProxyTopic + UpstreamProxyDisableTopic
+// Used by fog connector to publish upstream messages
+// Operator Name is appended to enable easy mapping to kafka at cloud side
+const CloudUpstreamTopic = cloud.CloudAnalyticsMQTTTopicPrefix + UpstreamTopic + "/messages"
+
+func ParseCloudUpstreamTopic(topic string) string {
+	splittedTopic := strings.Split(topic, "/")
+	return splittedTopic[len(splittedTopic)-1]
 }
