@@ -23,8 +23,9 @@ type StartOperatorMessage struct {
 }
 
 type OperatorAgentResponse struct {
-	Response        string              `json:"state"`
-	ResponseMessage string              `json:"responseMessage"`
+	Success        bool              `json:"success"`
+	Error string              `json:"error"`
+	OperatorState string `json:"state"`
 	OperatorId      string              `json:"operatorId"`
 	Agent           agent.Configuration `json:"agent"`
 }

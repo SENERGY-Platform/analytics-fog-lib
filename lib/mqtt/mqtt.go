@@ -7,19 +7,10 @@ import (
 	"strconv"
 	"time"
 	"errors"
-	log_level "github.com/y-du/go-log-level"
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 )
 
-type MQTTClient struct {
-	Client      MQTT.Client
-	Retained    *bool
-	Broker      BrokerConfig
-	TopicConfig TopicConfig
-	Logger      *log_level.Logger
-	Relay 		RelayController
-}
 
 
 func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
