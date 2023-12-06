@@ -33,7 +33,7 @@ type OperatorAgentSuccessResponse struct {
 }
 
 type Operator struct {
-	StartOperatorMessage
+	StartOperatorControlCommand
 	Event OperatorAgentResponse `json:"event"`
 	State string                `json:"state"`
 	Agent string                `json:"agent_id"`
