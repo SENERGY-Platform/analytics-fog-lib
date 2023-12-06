@@ -6,24 +6,18 @@ import (
 )
 
 type StartOperatorControlCommand struct {
-	control.ControlMessage
-	Operator StartOperatorMessage `json:"data"`
+	ImageId        string            `json:"imageId"`
+	OperatorConfig map[string]string `json:"operatorConfig"`
+	InputTopics    []InputTopic      `json:"inputTopics"`
+	Config         FogConfig         `json:"config"`
 }
 
 type StopOperatorControlCommand struct {
-	control.ControlMessage
 	OperatorIDs
 }
 
 type StopOperatorAgentControlCommand struct {
 	DeploymentReference string `json:"deployment_ref"`
-}
-
-type StartOperatorMessage struct {
-	ImageId        string            `json:"imageId"`
-	OperatorConfig map[string]string `json:"operatorConfig"`
-	InputTopics    []InputTopic      `json:"inputTopics"`
-	Config         FogConfig         `json:"config"`
 }
 
 type OperatorAgentResponse struct {
