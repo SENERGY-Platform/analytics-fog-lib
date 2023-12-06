@@ -8,9 +8,9 @@ import (
 const AgentsTopic = fog.FogAnalyticsTopicPrefix + "agents"
 
 func GetStartOperatorAgentTopic(agentID string) string {
-	return AgentsTopic + "/" + agentID + "control/start"
+	return AgentsTopic + "/" + agentID + "/control/start"
 }
 
 func GetStopOperatorAgentTopic(agentID string) string {
-	return AgentsTopic + "/" + agentID + "control/stop"
+	return AgentsTopic + "/" + agentID + "/control/stop"
 }
