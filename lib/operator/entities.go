@@ -17,6 +17,7 @@ type StopOperatorControlCommand struct {
 
 type StopOperatorAgentControlCommand struct {
 	DeploymentReference string `json:"deployment_ref"`
+	OperatorID string `json:"operator_id"`
 }
 
 type OperatorAgentResponse struct {
