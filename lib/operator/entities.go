@@ -2,7 +2,6 @@ package operator
 
 import (
 	"github.com/SENERGY-Platform/analytics-fog-lib/lib/agent"
-	"github.com/SENERGY-Platform/analytics-fog-lib/lib/control"
 )
 
 type StartOperatorControlCommand struct {
