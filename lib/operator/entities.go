@@ -15,6 +15,10 @@ type StopOperatorControlCommand struct {
 	OperatorIDs
 }
 
+type StopOperatorAgentControlCommand struct {
+	DeploymentReference string `json:"deployment_ref"`
+}
+
 type StartOperatorMessage struct {
 	ImageId        string            `json:"imageId"`
 	OperatorConfig map[string]string `json:"operatorConfig"`

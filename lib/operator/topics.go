@@ -13,13 +13,19 @@ import (
 const OperatorsTopicPrefix = fog.FogAnalyticsTopicPrefix + "operator/"
 
 // Used by the connector to send control messages like start/stop operator to the master.
-const OperatorsControlFogTopic = OperatorsTopicPrefix + "control"
+const StartOperatorFogTopic = OperatorsTopicPrefix + "control/start"
+const StopOperatorFogTopic = OperatorsTopicPrefix + "control/stop"
 
 // Used by the agents to inform master about success/erros of operators
-const OperatorsControlResponseFogTopic = OperatorsTopicPrefix + "control/response"
+const StartOperatorResponseFogTopic = OperatorsTopicPrefix + "control/start/response"
+const StopOperatorResponseFogTopic = OperatorsTopicPrefix + "control/stop/response"
 
-func GetOperatorControlCloudTopic(id string) string {
-	return cloud.CloudAnalyticsMQTTTopicPrefix + id + "/operator/control"
+func GetStartOperatorCloudTopic(id string) string {
+	return cloud.CloudAnalyticsMQTTTopicPrefix + id + "/operator/control/start"
+}
+
+func GetStopOperatorCloudTopic(id string) string {
+	return cloud.CloudAnalyticsMQTTTopicPrefix + id + "/operator/control/stop"
 }
 
 func GenerateOperatorOutputTopic(name string, baseOperatorID string, operatorID string, deployLocation string) (string, error) {
