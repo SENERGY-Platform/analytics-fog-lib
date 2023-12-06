@@ -27,7 +27,11 @@ type OperatorAgentResponse struct {
 	Agent           agent.Configuration `json:"agent"`
 }
 
-type OperatorAgentSuccessResponse struct {
+type StopOperatorAgentResponse struct {
+	OperatorAgentResponse
+}
+
+type StartOperatorAgentResponse struct {
 	OperatorAgentResponse
 	ContainerId string `json:"containerId"`
 }
@@ -37,6 +41,7 @@ type Operator struct {
 	Event OperatorAgentResponse `json:"event"`
 	State string                `json:"state"`
 	Agent string                `json:"agent_id"`
+	DeploymentReference string `json:"deployment_ref"`
 }
 
 type OperatorIDs struct {
