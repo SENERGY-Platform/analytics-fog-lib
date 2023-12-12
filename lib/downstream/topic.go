@@ -8,7 +8,11 @@ import (
 const DownstreamTopic = "/downstream"
 
 func GetDownstreamOperatorCloudSubTopic(id string) string {
-	return cloud.CloudAnalyticsMQTTTopicPrefix + id + DownstreamTopic + "/operator/#"
+	return GetDownstreamOperatorCloudMatchTopic(id) + "/#"
+}
+
+func GetDownstreamOperatorCloudMatchTopic(id string) string {
+	return cloud.CloudAnalyticsMQTTTopicPrefix + id + DownstreamTopic + "/operator"
 }
 
 func GetDownstreamDeviceCloudSubTopic(id string) string {
