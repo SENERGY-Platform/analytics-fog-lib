@@ -37,3 +37,10 @@ func GenerateOperatorOutputTopic(name string, baseOperatorID string, operatorID 
 	return "", errors.New(fmt.Sprintf("Deployment location %s is not known", deployLocation))
 }
 
+func GetOperatorControlSyncResponseTopic(id string) string {
+	return cloud.CloudAnalyticsMQTTTopicPrefix + id + "/operator/control/sync/response"
+}
+
+func GetOperatorControlSyncTriggerTopic(id string) string {
+	return cloud.CloudAnalyticsMQTTTopicPrefix + id + "/operator/control/sync/request"
+}

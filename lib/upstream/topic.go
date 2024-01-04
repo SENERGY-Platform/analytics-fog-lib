@@ -25,3 +25,11 @@ func ParseCloudUpstreamTopic(topic string) string {
 	splittedTopic := strings.Split(topic, "/")
 	return splittedTopic[len(splittedTopic)-1]
 }
+
+func GetUpstreamControlSyncResponseTopic(id string) string {
+	return cloud.CloudAnalyticsMQTTTopicPrefix + id + "/" + UpstreamTopic + "/sync/response"
+}
+
+func GetUpstreamControlSyncTriggerTopic(id string) string {
+	return cloud.CloudAnalyticsMQTTTopicPrefix + id + "/" + UpstreamTopic + "/sync/request"
+}
