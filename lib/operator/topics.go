@@ -4,6 +4,7 @@ import (
 	"github.com/SENERGY-Platform/analytics-fog-lib/lib/fog"
 	"errors"
 	"fmt"
+	"strings"
 	
 	"github.com/SENERGY-Platform/analytics-fog-lib/lib/location"
 	"github.com/SENERGY-Platform/analytics-fog-lib/lib/cloud"
@@ -44,3 +45,9 @@ func GetOperatorControlSyncResponseTopic(id string) string {
 func GetOperatorControlSyncTriggerTopic(id string) string {
 	return cloud.CloudAnalyticsMQTTTopicPrefix + id + "/operator/control/sync/request"
 }
+
+func GetUserIDFromOperatorControlSyncTopic(topic string) string {
+	parts := strings.Split(topic, "/")
+	return parts[2]
+} 
+	
