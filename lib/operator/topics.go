@@ -42,8 +42,12 @@ func GetOperatorControlSyncResponseTopic(id string) string {
 	return cloud.CloudAnalyticsMQTTTopicPrefix + id + "/operator/control/sync/response"
 }
 
-func GetOperatorControlSyncTriggerTopic(id string) string {
+func GetOperatorControlSyncTriggerPubTopic(id string) string {
 	return cloud.CloudAnalyticsMQTTTopicPrefix + id + "/operator/control/sync/request"
+}
+
+func GetOperatorControlSyncTriggerSubTopic() string {
+	return cloud.CloudAnalyticsMQTTTopicPrefix + "#/operator/control/sync/request"
 }
 
 func GetUserIDFromOperatorControlSyncTopic(topic string) string {

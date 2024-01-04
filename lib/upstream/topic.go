@@ -30,10 +30,13 @@ func GetUpstreamControlSyncResponseTopic(id string) string {
 	return cloud.CloudAnalyticsMQTTTopicPrefix + id + "/" + UpstreamTopic + "/sync/response"
 }
 
-func GetUpstreamControlSyncTriggerTopic(id string) string {
+func GetUpstreamControlSyncTriggerPubTopic(id string) string {
 	return cloud.CloudAnalyticsMQTTTopicPrefix + id + "/" + UpstreamTopic + "/sync/request"
 }
 
+func GetUpstreamControlSyncTriggerSubTopic() string {
+	return cloud.CloudAnalyticsMQTTTopicPrefix + "#/" + UpstreamTopic + "/sync/request"
+}
 
 func GetUserIDFromUpstreamControlSyncTopic(topic string) string {
 	parts := strings.Split(topic, "/")
