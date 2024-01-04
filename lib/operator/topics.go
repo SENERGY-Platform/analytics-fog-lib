@@ -47,7 +47,7 @@ func GetOperatorControlSyncTriggerPubTopic(id string) string {
 }
 
 func GetOperatorControlSyncTriggerSubTopic() string {
-	return cloud.CloudAnalyticsMQTTTopicPrefix + "#/operator/control/sync/request"
+	return cloud.CloudAnalyticsMQTTTopicPrefix + "+/operator/control/sync/request"
 }
 
 func GetUserIDFromOperatorControlSyncTopic(topic string) string {
