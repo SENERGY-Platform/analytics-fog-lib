@@ -37,6 +37,10 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
 		SetClientID(clientId).
 		SetCleanSession(true)
 
+	if client.ReconnectHandler != nil {
+		connOpts.SetReconnectHandler(client.ReconnectHandler)
+	}
+	
 	if username != nil && *username != "" {
 		connOpts.SetUsername(*username)
 		if *password != "" {
@@ -118,5 +122,5 @@ func (client *MQTTClient) SetRelayController(relay RelayController) {
 }
 
 func (client *MQTTClient) SetReconnectHandler(handler MQTT.ReconnectHandler) {
-	client.ReconnectHandler = handler 
+	client.ReconnectHandler = &handler 
 }
