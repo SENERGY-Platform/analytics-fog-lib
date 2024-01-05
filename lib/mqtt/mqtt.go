@@ -44,7 +44,11 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
 			client.Logger.Debug("Attempt to connect!")
 			return tlsCfg
 		}).
-		SetMaxReconnectInterval(5 * time.Second)
+		// debug
+		SetMaxReconnectInterval(5 * time.Second).
+		SetPingTimeout(10 * time.Second).
+		SetKeepAlive(10 * time.Second).
+		SetAutoReconnect(true)
 
 	if client.ReconnectHandler != nil {
 		connOpts.SetReconnectingHandler(*client.ReconnectHandler)
