@@ -38,7 +38,7 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
 		SetCleanSession(true)
 
 	if client.ReconnectHandler != nil {
-		connOpts.SetReconnectingHandler(client.ReconnectHandler)
+		connOpts.SetReconnectingHandler(*client.ReconnectHandler)
 	}
 
 	if username != nil && *username != "" {
