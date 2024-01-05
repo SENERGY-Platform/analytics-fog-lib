@@ -40,8 +40,9 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
 		SetConnectionLostHandler(func(c MQTT.Client, err error) {
 			client.Logger.Debug("Connection Lost!")
 		}).
-		SetConnectionAttemptHandler(func(broker *url.URL, tlsCfg *tls.Config) {
+		SetConnectionAttemptHandler(func(broker *url.URL, tlsCfg *tls.Config) *tls.Config {
 			client.Logger.Debug("Attempt to connect!")
+			return tlsCfg
 		})
 
 	if client.ReconnectHandler != nil {
