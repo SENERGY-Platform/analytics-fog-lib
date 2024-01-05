@@ -19,7 +19,7 @@ type MQTTClient struct {
 	TopicConfig TopicConfig
 	Logger      *log_level.Logger
 	Relay 		RelayController
-	ReconnectHandler MQTT.ReconnectHandler
+	ReconnectHandler *MQTT.ReconnectHandler
 }
 
 func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
@@ -36,7 +36,11 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
 		AddBroker(server).
 		SetClientID(clientId).
 		SetCleanSession(true).
-		SetReconnectingHandler(client.ReconnectHandler)
+
+	
+	if client.ReconnectHandler != nil {
+		connOpts.SetReconnectingHandler(client.ReconnectHandler)
+	}
 
 	if username != nil && *username != "" {
 		connOpts.SetUsername(*username)
