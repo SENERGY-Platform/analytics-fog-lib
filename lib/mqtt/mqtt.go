@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 	"time"
+	"net/url"
 	"errors"
 	log_level "github.com/y-du/go-log-level"
 
@@ -35,7 +36,13 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
 	connOpts := MQTT.NewClientOptions().
 		AddBroker(server).
 		SetClientID(clientId).
-		SetCleanSession(true)
+		SetCleanSession(true).
+		SetConnectionLostHandler(func(c MQTT.Client, err error) {
+			client.Logger.Debug("Connection Lost!")
+		}).
+		SetConnectionAttemptHandler(func(broker *url.URL, tlsCfg *tls.Config) {
+			client.Logger.Debug("Attempt to connect!")
+		})
 
 	if client.ReconnectHandler != nil {
 		connOpts.SetReconnectingHandler(*client.ReconnectHandler)
