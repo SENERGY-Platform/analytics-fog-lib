@@ -118,5 +118,5 @@ func (client *MQTTClient) SetRelayController(relay RelayController) {
 }
 
 func (client *MQTTClient) SetReconnectHandler(handler MQTT.ReconnectHandler) {
-	client.SetReconnectHandler(handler) 
+	client.ReconnectHandler = handler 
 }
