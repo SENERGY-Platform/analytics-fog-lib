@@ -35,7 +35,7 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
 	connOpts := MQTT.NewClientOptions().
 		AddBroker(server).
 		SetClientID(clientId).
-		SetCleanSession(true).
+		SetCleanSession(true)
 
 	
 	if client.ReconnectHandler != nil {
