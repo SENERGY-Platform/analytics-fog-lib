@@ -44,15 +44,14 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
 			client.Logger.Debug("Attempt to connect!")
 			return tlsCfg
 		}).
+		SetReconnectingHandler(func(client MQTT.Client, opt *MQTT.ClientOptions) {
+			client.Logger.Debug("Try to reconnect!")
+		}).
 		// debug
 		SetMaxReconnectInterval(5 * time.Second).
 		SetPingTimeout(10 * time.Second).
 		SetKeepAlive(10 * time.Second).
 		SetAutoReconnect(true)
-
-	if client.ReconnectHandler != nil {
-		connOpts.SetReconnectingHandler(*client.ReconnectHandler)
-	}
 
 	if username != nil && *username != "" {
 		connOpts.SetUsername(*username)
@@ -69,6 +68,10 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
 			client.Logger.Debugf("Subscribed to topics: %v", client.TopicConfig)
 			if token := c.SubscribeMultiple(client.TopicConfig, client.Relay.OnMessageReceived); token.Wait() && token.Error() != nil {
 				panic(token.Error())
+			}
+			if client.ReconnectHandler != nil {
+				client.Logger.Debugf("Call connect handler")
+				*client.ReconnectHandler()
 			}
 		}
 	}
