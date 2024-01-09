@@ -20,7 +20,7 @@ type MQTTClient struct {
 	TopicConfig TopicConfig
 	Logger      *log_level.Logger
 	Relay 		RelayController
-	ReconnectHandler *MQTT.ReconnectHandler
+	OnConnectHandler func(MQTT.Client)
 }
 
 func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
@@ -44,7 +44,7 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
 			client.Logger.Debug("Attempt to connect!")
 			return tlsCfg
 		}).
-		SetReconnectingHandler(func(client MQTT.Client, opt *MQTT.ClientOptions) {
+		SetReconnectingHandler(func(mqttClient MQTT.Client, opt *MQTT.ClientOptions) {
 			client.Logger.Debug("Try to reconnect!")
 		}).
 		// debug
@@ -69,10 +69,8 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
 			if token := c.SubscribeMultiple(client.TopicConfig, client.Relay.OnMessageReceived); token.Wait() && token.Error() != nil {
 				panic(token.Error())
 			}
-			if client.ReconnectHandler != nil {
-				client.Logger.Debugf("Call connect handler")
-				*client.ReconnectHandler()
-			}
+			client.Logger.Debugf("Call connect handler")
+			client.OnConnectHandler(c)
 		}
 	}
 	
@@ -135,8 +133,4 @@ func (client *MQTTClient) Unsubscribe(topic string) error {
 
 func (client *MQTTClient) SetRelayController(relay RelayController) {
 	client.Relay = relay
-}
-
-func (client *MQTTClient) SetReconnectHandler(handler MQTT.ReconnectHandler) {
-	client.ReconnectHandler = &handler 
 }
