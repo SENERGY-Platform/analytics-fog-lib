@@ -38,14 +38,14 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
 		SetClientID(clientId).
 		SetCleanSession(true).
 		SetConnectionLostHandler(func(c MQTT.Client, err error) {
-			client.Logger.Debug("Connection Lost!")
+			client.Logger.Debug("Connection Lost to " + server)
 		}).
 		SetConnectionAttemptHandler(func(broker *url.URL, tlsCfg *tls.Config) *tls.Config {
-			client.Logger.Debug("Attempt to connect!")
+			client.Logger.Debug("Attempt to connect to " + server)
 			return tlsCfg
 		}).
 		SetReconnectingHandler(func(mqttClient MQTT.Client, opt *MQTT.ClientOptions) {
-			client.Logger.Debug("Try to reconnect!")
+			client.Logger.Debug("Try to reconnect to " + server)
 		}).
 		// debug
 		SetMaxReconnectInterval(5 * time.Second).
