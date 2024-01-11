@@ -9,6 +9,7 @@ import (
 // Used by the connector/upstream proxy to forward operator output to platform
 const UpstreamTopic = "upstream" 
 
+// CLOUD
 func GetUpstreamEnableCloudTopic(id string) string {
 	return cloud.CloudAnalyticsMQTTTopicPrefix + id + "/" + UpstreamTopic + "/enable"
 } 
