@@ -1,7 +1,6 @@
 package mqtt
 
 import (
-	"crypto/rand"
 	"crypto/tls"
 	"fmt"
 
