@@ -2,13 +2,14 @@ package mqtt
 
 import (
 	"crypto/tls"
+	"fmt"
 
+	"errors"
+	"log/slog"
+	"net/url"
 	"os"
 	"strconv"
 	"time"
-	"net/url"
-	"errors"
-	log_level "github.com/y-du/go-log-level"
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 )
@@ -18,7 +19,7 @@ type MQTTClient struct {
 	Retained    *bool
 	Broker      BrokerConfig
 	TopicConfig TopicConfig
-	Logger      *log_level.Logger
+	Logger      *slog.Logger
 	Relay 		RelayController
 	OnConnectHandler func(MQTT.Client)
 }
@@ -65,11 +66,11 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
 
 	connOpts.OnConnect = func(c MQTT.Client) {
 		if(len(client.TopicConfig) != 0) {
-			client.Logger.Debugf("Subscribed to topics: %v", client.TopicConfig)
+			client.Logger.Debug(fmt.Sprintf("Subscribed to topics: %v", client.TopicConfig))
 			if token := c.SubscribeMultiple(client.TopicConfig, client.Relay.OnMessageReceived); token.Wait() && token.Error() != nil {
 				panic(token.Error())
 			}
-			client.Logger.Debugf("Call connect handler")
+			client.Logger.Debug("Call connect handler")
 			client.OnConnectHandler(c)
 		}
 	}
@@ -78,17 +79,17 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
 
 	loopCounter := 0
 	for {
-		client.Logger.Debugf("Try to connect to: %s [%d/240]", server, loopCounter)
+		client.Logger.Debug(fmt.Sprintf("Try to connect to: %s [%d/240]", server, loopCounter))
 
 		if loopCounter > 240 {
 			panic("Could not connect with broker")
 		}
 
 		if token := client.Client.Connect(); token.Wait() && token.Error() != nil {
-			client.Logger.Errorf("Could not connect to %s : %s\n", server, token.Error())
+			client.Logger.Error(fmt.Sprintf("Could not connect to %s : %s\n", server, token.Error()))
 			time.Sleep(5 * time.Second)
 		} else {
-			client.Logger.Debugf("Connected to %s\n", server)
+			client.Logger.Debug("Connected to: " + server)
 			break
 		}
 		loopCounter += 1
@@ -109,7 +110,7 @@ func (client *MQTTClient) Publish(topic string, message string, qos int) error {
 
 	token := client.Client.Publish(topic, byte(qos), *client.Retained, message)
 	if token.Wait() && token.Error() != nil {
-		client.Logger.Errorf("Error on Publish: ", token.Error())
+		client.Logger.Error("Error on Publish: " + token.Error().Error())
 		return token.Error()
 	}
 	return nil
