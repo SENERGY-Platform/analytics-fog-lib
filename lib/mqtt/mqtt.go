@@ -1,6 +1,7 @@
 package mqtt
 
 import (
+	"crypto/rand"
 	"crypto/tls"
 	"fmt"
 
@@ -8,6 +9,7 @@ import (
 	"log/slog"
 	"net/url"
 	"os"
+	mathRand "math/rand"
 	"strconv"
 	"time"
 
@@ -32,7 +34,7 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
 	server := "tcp://"+client.Broker.Host+":"+client.Broker.Port
 	retained := false
 	client.Retained = &retained
-	clientId := hostname+strconv.Itoa(time.Now().Second())
+	clientId := hostname+strconv.Itoa(mathRand.Int())
 
 	connOpts := MQTT.NewClientOptions().
 		AddBroker(server).
