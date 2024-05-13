@@ -23,9 +23,10 @@ type MQTTClient struct {
 	Logger      *slog.Logger
 	Relay 		RelayController
 	OnConnectHandler func(MQTT.Client)
+	SubscribeInitial bool
 }
 
-func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
+func (client *MQTTClient) ConnectMQTTBroker(username, password *string) error {
 	//MQTT.DEBUG = log.New(os.Stdout, "", 0)
 
 	hostname, _ := os.Hostname()
@@ -66,14 +67,9 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
 	connOpts.SetTLSConfig(tlsConfig)
 
 	connOpts.OnConnect = func(c MQTT.Client) {
-		if(len(client.TopicConfig) != 0) {
-			client.Logger.Debug(fmt.Sprintf("Subscribed to topics: %v", client.TopicConfig))
-			if token := c.SubscribeMultiple(client.TopicConfig, client.Relay.OnMessageReceived); token.Wait() && token.Error() != nil {
-				panic(token.Error())
-			}
-			client.Logger.Debug("Call connect handler")
-			client.OnConnectHandler(c)
-		}
+		client.Logger.Debug("Connected to server: " + server)
+		client.Logger.Debug("Call connect handler")
+		client.OnConnectHandler(c)
 	}
 	
 	client.Client = MQTT.NewClient(connOpts)
@@ -91,11 +87,28 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) {
 			time.Sleep(5 * time.Second)
 		} else {
 			client.Logger.Debug("Connected to: " + server)
-			break
+			if client.SubscribeInitial {
+				return client.InitialSubscribe()
+			}
+			return nil
 		}
 		loopCounter += 1
 	}
 
+}
+
+func (client *MQTTClient) InitialSubscribe() error {
+	if(len(client.TopicConfig) == 0) {
+		return errors.New("No topics configured")
+	}
+
+	fmt.Printf("Subscribed to topics: %v", client.TopicConfig)
+	token := client.Client.SubscribeMultiple(client.TopicConfig, client.Relay.OnMessageReceived); 
+	if token.WaitTimeout(30 * time.Second) && token.Error() != nil {
+		client.Logger.Error("Could not initial subscribe: " + token.Error().Error())
+		return token.Error()
+	}
+	return nil
 }
 
 func (client *MQTTClient) CloseConnection() {
