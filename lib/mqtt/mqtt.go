@@ -102,13 +102,13 @@ func (client *MQTTClient) InitialSubscribe() error {
 		return errors.New("No topics configured")
 	}
 
-	fmt.Printf("Try to initially subscribe to topics: %v", client.TopicConfig)
+	client.Logger.Debug("Try to initially subscribe to topics: %v", client.TopicConfig)
 	token := client.Client.SubscribeMultiple(client.TopicConfig, client.Relay.OnMessageReceived); 
 	if token.WaitTimeout(30 * time.Second) && token.Error() != nil {
 		client.Logger.Error("Could not initial subscribe: " + token.Error().Error())
 		return token.Error()
 	}
-	fmt.Printf("Subscribed to topics: %v", client.TopicConfig)
+	client.Logger.Debug("Subscribed to topics: %v", client.TopicConfig)
 	return nil
 }
 
