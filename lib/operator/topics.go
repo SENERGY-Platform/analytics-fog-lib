@@ -2,11 +2,9 @@ package operator
 
 import (
 	"github.com/SENERGY-Platform/analytics-fog-lib/lib/fog"
-	"errors"
 	"fmt"
 	"strings"
 	
-	"github.com/SENERGY-Platform/analytics-fog-lib/lib/location"
 	"github.com/SENERGY-Platform/analytics-fog-lib/lib/cloud"
 
 )
@@ -51,12 +49,10 @@ func GetUserIDFromOperatorControlSyncTopic(topic string) string {
 	return parts[2]
 } 
 	
+func GenerateFogOperatorTopic(name, operatorID, pipelineID string) string {
+	return fmt.Sprintf("%s%s/%s/%s", fog.FogAnalyticsTopicPrefix, name, operatorID, pipelineID)
+}
 
-func GenerateOperatorOutputTopic(name string, baseOperatorID string, operatorID string, deployLocation string) (string, error) {
-	if deployLocation == location.Cloud {
-		return cloud.CloudAnalyticsKafkaTopicPrefix + name, nil
-	} else if deployLocation == location.Local {
-		return fog.FogAnalyticsTopicPrefix + name + "/" + operatorID, nil
-	}
-	return "", errors.New(fmt.Sprintf("Deployment location %s is not known", deployLocation))
+func GenerateCloudOperatorTopic(name string) string {
+	return fmt.Sprintf("%s%s", cloud.CloudAnalyticsKafkaTopicPrefix, name)
 }
