@@ -5,7 +5,7 @@ import (
 )
 
 // needed because of import cycle between master-mqtt-relay-master
-type RelayController interface {
+type SubscriptionHandler interface {
 	ProcessMessage(message MQTT.Message)
 	OnMessageReceived(client MQTT.Client, message MQTT.Message)
 }

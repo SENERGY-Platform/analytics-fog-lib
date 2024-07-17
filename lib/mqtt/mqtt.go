@@ -21,8 +21,9 @@ type MQTTClient struct {
 	Broker      BrokerConfig
 	TopicConfig TopicConfig
 	Logger      *slog.Logger
-	Relay 		RelayController
+	SubscriptionHandler 		SubscriptionHandler
 	OnConnectHandler func(MQTT.Client)
+	OnConnectionLostHander func(MQTT.Client)
 	SubscribeInitial bool
 }
 
@@ -42,6 +43,7 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) error {
 		SetCleanSession(true).
 		SetConnectionLostHandler(func(c MQTT.Client, err error) {
 			client.Logger.Debug("Connection Lost to " + server)
+			client.OnConnectionLostHander(c)
 		}).
 		SetConnectionAttemptHandler(func(broker *url.URL, tlsCfg *tls.Config) *tls.Config {
 			client.Logger.Debug("Attempt to connect to " + server)
@@ -103,7 +105,7 @@ func (client *MQTTClient) InitialSubscribe() error {
 	}
 
 	client.Logger.Debug("Try to initially subscribe to topics: %v", client.TopicConfig)
-	token := client.Client.SubscribeMultiple(client.TopicConfig, client.Relay.OnMessageReceived); 
+	token := client.Client.SubscribeMultiple(client.TopicConfig, client.SubscriptionHandler.OnMessageReceived); 
 	if token.WaitTimeout(30 * time.Second) && token.Error() != nil {
 		client.Logger.Error("Could not initial subscribe: " + token.Error().Error())
 		return token.Error()
@@ -132,7 +134,7 @@ func (client *MQTTClient) Publish(topic string, message string, qos int) error {
 }
 
 func (client *MQTTClient) Subscribe(topic string, qos int) error {
-	token := client.Client.Subscribe(topic, 2, client.Relay.OnMessageReceived)
+	token := client.Client.Subscribe(topic, 2, client.SubscriptionHandler.OnMessageReceived)
 	if token.Wait() && token.Error() != nil {
 		return token.Error()
 	}
@@ -147,6 +149,6 @@ func (client *MQTTClient) Unsubscribe(topic string) error {
 	return nil
 }
 
-func (client *MQTTClient) SetRelayController(relay RelayController) {
-	client.Relay = relay
+func (client *MQTTClient) SetSubscriptionHandler(subcriptionHandler SubscriptionHandler) {
+	client.SubscriptionHandler = subcriptionHandler
 }
