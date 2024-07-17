@@ -43,7 +43,9 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) error {
 		SetCleanSession(true).
 		SetConnectionLostHandler(func(c MQTT.Client, err error) {
 			client.Logger.Debug("Connection Lost to " + server)
-			client.OnConnectionLostHander(c)
+			if client.OnConnectionLostHander != nil {
+				client.OnConnectionLostHander(c)
+			}
 		}).
 		SetConnectionAttemptHandler(func(broker *url.URL, tlsCfg *tls.Config) *tls.Config {
 			client.Logger.Debug("Attempt to connect to " + server)
@@ -71,7 +73,9 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) error {
 	connOpts.OnConnect = func(c MQTT.Client) {
 		client.Logger.Debug("Connected to server: " + server)
 		client.Logger.Debug("Call connect handler")
-		client.OnConnectHandler(c)
+		if client.OnConnectHandler != nil {
+			client.OnConnectHandler(c)
+		}
 	}
 	
 	client.Client = MQTT.NewClient(connOpts)
@@ -151,4 +155,12 @@ func (client *MQTTClient) Unsubscribe(topic string) error {
 
 func (client *MQTTClient) SetSubscriptionHandler(subcriptionHandler SubscriptionHandler) {
 	client.SubscriptionHandler = subcriptionHandler
+}
+
+func (client *MQTTClient) SetConnectionLostHandler(connectionLostHandler func(MQTT.Client)) {
+	client.OnConnectionLostHander = connectionLostHandler
+}
+
+func (client *MQTTClient) SetConnectionHandler(connectionHandler func(MQTT.Client)) {
+	client.OnConnectHandler = connectionHandler
 }
