@@ -1,9 +1,5 @@
 package operator
 
-import (
-	"github.com/SENERGY-Platform/analytics-fog-lib/lib/agent"
-)
-
 type StartOperatorControlCommand struct {
 	ImageId        string            `json:"imageId"`
 	OperatorConfig map[string]string `json:"operatorConfig"`
@@ -21,9 +17,8 @@ type StopOperatorControlCommand struct {
 }
 
 type StopOperatorAgentControlCommand struct {
-	DeploymentReference string `json:"deployment_ref"`
-	OperatorID string `json:"operator_id"`
-	PipelineID string `json:"pipeline_id"`
+	ContainerId string `json:"deployment_ref"`
+	OperatorIDs
 }
 
 type StopOperatorAgentResponse struct {
@@ -31,19 +26,18 @@ type StopOperatorAgentResponse struct {
 }
 
 type OperatorAgentResponse struct {
-	Success        bool              `json:"success"`
+	OperatorIDs
 	Error string              `json:"error"`
-	OperatorState string `json:"state"`
-	OperatorId      string              `json:"operatorId"`
-	Agent           agent.Configuration `json:"agent"`
+	DeploymentState string `json:"state"`
+	AgentId           string `json:"agent_id"`
 }
 
 type Operator struct {
-	StartOperatorControlCommand
-	Event OperatorAgentResponse `json:"event"`
-	State string                `json:"state"`
-	Agent string                `json:"agent_id"`
-	DeploymentReference string `json:"deployment_ref"`
+	OperatorIDs
+	DeploymentState string                `json:"state"`
+	DeploymentError string `json:"deployment_error"`
+	AgentId string                `json:"agent_id"`
+	ContainerId string `json:"container_id"`
 }
 
 type OperatorIDs struct {
