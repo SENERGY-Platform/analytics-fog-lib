@@ -11,6 +11,11 @@ type StartOperatorControlCommand struct {
 	Config         FogConfig         `json:"config"`
 }
 
+type StartOperatorAgentResponse struct {
+	OperatorAgentResponse
+	ContainerId string `json:"containerId"`
+}
+
 type StopOperatorControlCommand struct {
 	OperatorIDs
 }
@@ -20,21 +25,16 @@ type StopOperatorAgentControlCommand struct {
 	OperatorID string `json:"operator_id"`
 }
 
+type StopOperatorAgentResponse struct {
+	OperatorAgentResponse
+}
+
 type OperatorAgentResponse struct {
 	Success        bool              `json:"success"`
 	Error string              `json:"error"`
 	OperatorState string `json:"state"`
 	OperatorId      string              `json:"operatorId"`
 	Agent           agent.Configuration `json:"agent"`
-}
-
-type StopOperatorAgentResponse struct {
-	OperatorAgentResponse
-}
-
-type StartOperatorAgentResponse struct {
-	OperatorAgentResponse
-	ContainerId string `json:"containerId"`
 }
 
 type Operator struct {
@@ -66,12 +66,4 @@ type InputTopic struct {
 type Mapping struct {
 	Dest   string `json:"dest"`
 	Source string `json:"source"`
-}
-
-type OperatorState struct {
-	pipelineID string 
-	operatorID string 
-	state string 
-	errMsg string
-	containerID string
 }

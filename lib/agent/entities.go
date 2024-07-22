@@ -9,6 +9,15 @@ import (
 type AgentInfoMessage struct {
 	control.ControlMessage
 	Conf Configuration `json:"agent"`
+	CurrentOperatorStates []OperatorState
+}
+
+type OperatorState struct {
+	PipelineID string 
+	OperatorID string 
+	State string 
+	ErrMsg string
+	ContainerID string
 }
 
 type Configuration struct {
