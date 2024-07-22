@@ -4,7 +4,8 @@ type StartOperatorControlCommand struct {
 	ImageId        string            `json:"imageId"`
 	OperatorConfig map[string]string `json:"operatorConfig"`
 	InputTopics    []InputTopic      `json:"inputTopics"`
-	Config         FogConfig         `json:"config"`
+	OutputTopic string `json:"outputTopic"`
+	OperatorIDs
 }
 
 type StartOperatorAgentResponse struct {
@@ -33,7 +34,7 @@ type OperatorAgentResponse struct {
 }
 
 type Operator struct {
-	OperatorIDs
+	StartOperatorControlCommand
 	DeploymentState string                `json:"state"`
 	DeploymentError string `json:"deployment_error"`
 	AgentId string                `json:"agent_id"`
@@ -44,11 +45,6 @@ type OperatorIDs struct {
 	PipelineId     string `json:"pipelineId"`
 	OperatorId     string `json:"operatorId"` // TODO check if operator is unique
 	BaseOperatorId string `json:"baseOperatorId"`
-}
-
-type FogConfig struct {
-	OutputTopic string `json:"outputTopic"`
-	OperatorIDs
 }
 
 type InputTopic struct {
