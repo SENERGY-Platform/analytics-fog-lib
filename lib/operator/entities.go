@@ -23,6 +23,7 @@ type StopOperatorControlCommand struct {
 type StopOperatorAgentControlCommand struct {
 	DeploymentReference string `json:"deployment_ref"`
 	OperatorID string `json:"operator_id"`
+	PipelineID string `json:"pipeline_id"`
 }
 
 type StopOperatorAgentResponse struct {
