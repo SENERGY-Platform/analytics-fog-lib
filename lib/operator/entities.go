@@ -67,3 +67,11 @@ type Mapping struct {
 	Dest   string `json:"dest"`
 	Source string `json:"source"`
 }
+
+type OperatorState struct {
+	pipelineID string 
+	operatorID string 
+	state string 
+	errMsg string
+	containerID string
+}

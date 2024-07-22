@@ -1,4 +1,7 @@
 package operator
 
-const OperatorDeployedSuccessfully = "OK"
-const OperatorDeployedError = "Error"
+const OperatorDeployedSuccessfully = "started"
+const OperatorDeploymentRunning = "starting"
+const OperatorStoppedSuccessfully = "stopped"
+const OperatorStopRunning = "stopping"
+const OperatorDeployedError = "not started"
