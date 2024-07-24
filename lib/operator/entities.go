@@ -33,6 +33,7 @@ type OperatorAgentResponse struct {
 	Error string              `json:"error"`
 	DeploymentState string `json:"state"`
 	AgentId           string `json:"agent_id"`
+	Time time.Time `json:"time"`
 }
 
 type Operator struct {
@@ -41,7 +42,7 @@ type Operator struct {
 	DeploymentError string `json:"deployment_error"`
 	AgentId string                `json:"agent_id"`
 	ContainerId string `json:"container_id"`
-	TimeOfLastHeartbeat time.Time
+	TimeOfLastHeartbeat time.Time `json:"time_last_heartbeat"`
 }
 
 type OperatorIDs struct {
