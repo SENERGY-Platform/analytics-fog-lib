@@ -18,6 +18,7 @@ type OperatorState struct {
 	State string 
 	ErrMsg string
 	ContainerID string
+	Time time.Time `json:"time"`
 }
 
 type Configuration struct {
