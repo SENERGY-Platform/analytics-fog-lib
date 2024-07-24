@@ -41,7 +41,7 @@ type Operator struct {
 	DeploymentError string `json:"deployment_error"`
 	AgentId string                `json:"agent_id"`
 	ContainerId string `json:"container_id"`
-	Updated time.Time
+	TimeOfLastHeartbeat time.Time
 }
 
 type OperatorIDs struct {
