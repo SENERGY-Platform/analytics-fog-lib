@@ -1,5 +1,7 @@
 package operator
 
+import "time"
+
 type StartOperatorControlCommand struct {
 	ImageId        string            `json:"imageId"`
 	OperatorConfig map[string]string `json:"operatorConfig"`
@@ -39,6 +41,7 @@ type Operator struct {
 	DeploymentError string `json:"deployment_error"`
 	AgentId string                `json:"agent_id"`
 	ContainerId string `json:"container_id"`
+	Updated time.Time
 }
 
 type OperatorIDs struct {
