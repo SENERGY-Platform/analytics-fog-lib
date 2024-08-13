@@ -6,10 +6,6 @@ type StartOperatorControlCommand struct {
 	ImageId        string            `json:"imageId"`
 	OperatorConfig map[string]string `json:"operatorConfig"`
 	InputTopics    []InputTopic      `json:"inputTopics"`
-	Config         FogConfig         `json:"config"`
-}
-
-type FogConfig struct {
 	OutputTopic string `json:"outputTopic"`
 	OperatorIDs
 }
