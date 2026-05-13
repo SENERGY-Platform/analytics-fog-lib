@@ -6,9 +6,9 @@ import (
 
 	"errors"
 	"log/slog"
+	mathRand "math/rand"
 	"net/url"
 	"os"
-	mathRand "math/rand"
 	"strconv"
 	"time"
 
@@ -16,15 +16,15 @@ import (
 )
 
 type MQTTClient struct {
-	Client      MQTT.Client
-	Retained    *bool
-	Broker      BrokerConfig
-	TopicConfig TopicConfig
-	Logger      *slog.Logger
-	SubscriptionHandler 		SubscriptionHandler
-	OnConnectHandler func(MQTT.Client)
+	Client                 MQTT.Client
+	Retained               *bool
+	Broker                 BrokerConfig
+	TopicConfig            TopicConfig
+	Logger                 *slog.Logger
+	SubscriptionHandler    SubscriptionHandler
+	OnConnectHandler       func(MQTT.Client)
 	OnConnectionLostHander func(MQTT.Client)
-	SubscribeInitial bool
+	SubscribeInitial       bool
 }
 
 func (client *MQTTClient) ConnectMQTTBroker(username, password *string) error {
@@ -32,10 +32,10 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) error {
 
 	hostname, _ := os.Hostname()
 
-	server := "tcp://"+client.Broker.Host+":"+client.Broker.Port
+	server := "tcp://" + client.Broker.Host + ":" + client.Broker.Port
 	retained := false
 	client.Retained = &retained
-	clientId := hostname+strconv.Itoa(mathRand.Int())
+	clientId := hostname + strconv.Itoa(mathRand.Int())
 
 	connOpts := MQTT.NewClientOptions().
 		AddBroker(server).
@@ -77,7 +77,7 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) error {
 			client.OnConnectHandler(c)
 		}
 	}
-	
+
 	client.Client = MQTT.NewClient(connOpts)
 
 	loopCounter := 0
@@ -104,13 +104,13 @@ func (client *MQTTClient) ConnectMQTTBroker(username, password *string) error {
 }
 
 func (client *MQTTClient) InitialSubscribe() error {
-	if(len(client.TopicConfig) == 0) {
+	if len(client.TopicConfig) == 0 {
 		return errors.New("No topics configured")
 	}
 
 	client.Logger.Debug("Try to initially subscribe to topics: %v", client.TopicConfig)
-	token := client.Client.SubscribeMultiple(client.TopicConfig, client.SubscriptionHandler.OnMessageReceived); 
-	if token.WaitTimeout(30 * time.Second) && token.Error() != nil {
+	token := client.Client.SubscribeMultiple(client.TopicConfig, client.SubscriptionHandler.OnMessageReceived)
+	if token.WaitTimeout(30*time.Second) && token.Error() != nil {
 		client.Logger.Error("Could not initial subscribe: " + token.Error().Error())
 		return token.Error()
 	}
