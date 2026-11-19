@@ -9,7 +9,6 @@ require (
 
 require (
 	github.com/gorilla/websocket v1.5.3 // indirect
-	github.com/y-du/go-log-level v0.2.3 // indirect
-	golang.org/x/net v0.54.0 // indirect
+	golang.org/x/net v0.55.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
 )
